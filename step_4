@@ -1,0 +1,57 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Nov  2 22:26:46 2016
+
+@author: carissagadson
+"""
+## step 4 of challenge
+
+import requests, json
+
+## construct HTTP POST request
+url4 = 'http://challenge.code2040.org/api/prefix'
+
+headers1 = {'Content-Type': 'application/json'}
+
+params1 = {'token': 'acfd4bea2a23e4735a50a5318245b87d'}
+
+resp1 = requests.post(url4, data=json.dumps(params1), headers=headers1)
+
+## turn resp1 from bytes to string
+str_dict = str(resp1.content,'utf-8')
+## turn string into useable dictionary
+dict_of_str = json.loads(str_dict)
+## initialize prefix as string to search for
+prefix = dict_of_str["prefix"]
+## initialize array as list of strings
+array = dict_of_str["array"]
+
+## get length of prefix
+prefix_len = len(prefix)
+
+## find all strings that start with prefix, and replace string with a 0 indicator
+for index in range(len(array)):
+    if array[index][:prefix_len] == prefix:
+        array[index] = 0
+
+## Note: At first I was using startswith() to find all strings starting with the prefix,
+## but I found online that this method is maximized when the strings are quite long.
+## Since the strings in this problem aren't very long, I decided to use this solution
+## instead, thinking the runtime may be a bit faster. However, I'm not completely sure
+## this is true.
+
+## remove all elements with value 0 from list
+array = list(filter(lambda x: x != 0, array))
+
+## construct second HTTP POST request with solution
+url4_1 = 'http://challenge.code2040.org/api/prefix/validate'
+
+headers2 = {'Content-Type': 'application/json'}
+
+params2 = {'token': 'acfd4bea2a23e4735a50a5318245b87d', 'array': array}
+
+resp2 = requests.post(url4_1, data=json.dumps(params2), headers=headers2)
+
+## print status
+#print(resp2.status_code, resp2.reason)

@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov  4 14:45:56 2016
+
+@author: carissagadson
+"""
+## step 1 of challenge
+
+import requests, json
+
+## construct HTTP POST request
+url = 'http://challenge.code2040.org/api/register'
+
+headers = {'Content-Type': 'application/json'}
+
+params = {'token': 'acfd4bea2a23e4735a50a5318245b87d', 'github': 'https://github.com/carissarose/code2040app'}
+
+resp = requests.post(url, data=json.dumps(params), headers=headers)
+
+## print status
+#print(resp.status_code, resp.reason)

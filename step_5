@@ -1,0 +1,52 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Nov  2 22:51:00 2016
+
+@author: carissagadson
+"""
+## step 5 of challenge
+
+import requests, json
+import dateutil.parser, datetime
+
+## construct HTTP POST request
+url5 = 'http://challenge.code2040.org/api/dating'
+
+headers1 = {'Content-Type': 'application/json'}
+
+params1 = {'token': 'acfd4bea2a23e4735a50a5318245b87d'}
+
+resp1 = requests.post(url5, data=json.dumps(params1), headers=headers1)
+
+## convert resp1 from bytes to string
+dict_str = str(resp1.content,'utf-8')
+## convert string to a useable dictionary
+time_dict = json.loads(dict_str)
+## initialize variable as datestamp from dictionary
+datestamp = time_dict["datestamp"]
+## intialize interval as the time interval in seconds from dictionary
+interval = time_dict["interval"]
+
+## convert datestamp from ISO 8601 format to Python datetime object
+start_time = dateutil.parser.parse(datestamp)
+## create updated datetime object that is changed/updated by the time interval
+updated_datetime = start_time + datetime.timedelta(seconds=interval)
+## convert the datetime object back into a datestamp in ISO 8601 format
+updated_iso_datestamp = datetime.datetime.isoformat(updated_datetime)[:-6] + 'Z'
+
+## NOTE: I've worked with datetime objects before, but never had to work with another
+## datetime/datestamp format while coding. Reading through documentation online on the
+## datetime/dateutil libraries was very helpful, as were other resources online.
+
+## construct second HTTP POST request with solution
+url5_1 = 'http://challenge.code2040.org/api/dating/validate'
+
+headers2 = {'Content-Type': 'application/json'}
+
+params2 = {'token': 'acfd4bea2a23e4735a50a5318245b87d', 'datestamp': updated_iso_datestamp}
+
+resp2 = requests.post(url5_1, data=json.dumps(params2), headers=headers2)
+
+## print status
+#print(resp2.status_code, resp2.reason)
